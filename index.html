@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2CE PROJE İNŞAAT MÜHENDİSLİK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* GENEL VE MEVCUT STİLLER */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { color: #333; line-height: 1.6; }
+        
+        /* Tıklamalarda sayfanın yumuşak kayması için */
+        html { scroll-behavior: smooth; }
+
+        /* Menünün yukarıda sabit kalması için */
+        header {
+            position: sticky; top: 0; z-index: 1000; background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); padding: 15px 5%; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .logo-area { text-decoration: none; color: #111; }
+        .logo-area h1 { font-size: 1.8rem; font-weight: 800; color: #CBA365; }
+        .logo-area span { font-size: 0.8rem; letter-spacing: 2px; font-weight: 500; }
+        
+        .nav-container { display: flex; align-items: center; gap: 40px; }
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul li a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+        nav ul li a:hover { color: #CBA365; }
+
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .phone-number { text-decoration: none; color: #222; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
+        
+        .lang-dropdown { position: relative; }
+        .lang-btn { background: none; border: 1px solid #ddd; padding: 5px 10px; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 5px; font-weight: 600; }
+        .lang-menu { display: none; position: absolute; right: 0; top: 100%; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; flex-direction: column; min-width: 150px; }
+        .lang-dropdown:hover .lang-menu { display: flex; }
+        .lang-menu a { padding: 10px 15px; text-decoration: none; color: #333; font-size: 0.9rem; border-bottom: 1px solid #eee; }
+        .lang-menu a:hover { background: #f9f9f9; color: #CBA365; }
+
+        /* --- KAYDIRMALI HERO SLIDER STİLLERİ --- */
+        .hero-slider-container {
+            position: relative;
+            width: 100%;
+            height: 80vh; /* Yüksekliği ekranın %80'i yapar, isteğe göre değiştirebilirsin */
+            min-height: 600px;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .slider-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 5%;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }
+
+        /* Resimlerin arka plan karartması ve konumlandırılması */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65));
+            z-index: 1;
+        }
+
+        .slide-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-position: center;
+            background-size: cover;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-content h2 { font-size: 3rem; font-weight: 300; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .hero-content h2 span { font-weight: 800; color: #CBA365; }
+        .hero-content p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px; color: #ddd; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        /* Slider Butonları (Sağ-Sol Oklar) */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        .slider-btn:hover {
+            background: #CBA365;
+            border-color: #CBA365;
+        }
+        .slider-btn.prev { left: 30px; }
+        .slider-btn.next { right: 30px; }
+
+        /* Alt Sabit Bar (Menü Kısmı Altındaki Alan) */
+        .hero-bottom-bar { 
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            z-index: 10;
+            width: 90%;
+            max-width: 1200px;
+        }
+        .hero-bar-item { background: rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 4px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; text-align: center;}
+        .hero-bar-item h5 { color: #fff; }
+        .hero-bar-item:hover { background: rgba(203, 163, 101, 0.8); cursor: pointer; }
+
+        /* --- YENİ EKLENEN BÖLÜMLERİN STİLLERİ --- */
+        .content-section { padding: 80px 5%; }
+        .content-section.bg-light { background-color: #f9f9f9; }
+        
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 2.2rem; color: #222; margin-bottom: 15px; text-transform: uppercase; }
+        .section-header h2 span { color: #CBA365; }
+        .section-header p { color: #666; font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+
+        /* Kurumsal Bölümü */
+        .corporate-content { display: flex; gap: 40px; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .corporate-text { flex: 1; }
+        .corporate-text h3 { color: #CBA365; margin-bottom: 15px; font-size: 1.5rem; }
+        .corporate-text p { margin-bottom: 15px; color: #555; text-align: justify; }
+        .corporate-image { flex: 1; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .corporate-image img { width: 100%; height: auto; display: block; }
+
+        /* Grid Yapıları (Referanslar ve Haberler) */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        
+        .card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 220px; object-fit: cover; }
+        .card-content { padding: 25px; }
+        .card-content h4 { margin-bottom: 10px; color: #222; font-size: 1.2rem; }
+        .card-content p { color: #666; font-size: 0.95rem; line-height: 1.6; }
+        .card-date { display: inline-block; background: #CBA365; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 15px; font-weight: 600; }
+
+        /* Diğer Mevcut Stillerin Devamı */
+        .expertise-section { padding: 80px 5%; background: #fff; }
+        .highlight-section { display: flex; padding: 0; background: #111; color: #fff; align-items: center; }
+        .highlight-image { flex: 1; background: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80') center/cover; min-height: 400px; }
+        .highlight-content { flex: 1; padding: 50px; }
+        
+        .contact-page-section { padding: 80px 5%; background: #f9f9f9; }
+        .contact-info-banner { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 50px; }
+        .info-item { text-align: center; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); flex: 1; min-width: 250px; }
+        .info-icon { margin-bottom: 15px; }
+        
+        .contact-main { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; }
+        .form-section, .map-section { flex: 1; min-width: 300px; background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .contact-form input, .contact-form textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; margin-bottom: 20px; }
+        .contact-form textarea { height: 120px; resize: none; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.9rem; color: #555; }
+        .submit-btn { background: #CBA365; color: #fff; border: none; padding: 15px 30px; border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: background 0.3s; }
+        .submit-btn:hover { background: #b58d51; }
+        
+        .map-container { height: 350px; border-radius: 8px; overflow: hidden; }
+
+        footer { background: #111; color: #fff; padding: 60px 5% 20px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; border-bottom: 1px solid #333; padding-bottom: 40px; margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li a { color: #aaa; text-decoration: none; transition: 0.3s; line-height: 2; }
+        .footer-links li a:hover { color: #CBA365; }
+        .footer-logo h2 { color: #CBA365; font-size: 1.8rem; }
+        .footer-bottom { text-align: center; color: #777; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-container { display: none; }
+            .corporate-content { flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .highlight-section { flex-direction: column; }
+            .slider-btn { width: 40px; height: 40px; }
+            .slider-btn.prev { left: 10px; }
+            .slider-btn.next { right: 10px; }
+            .hero-content h2 { font-size: 2rem; }
+            .hero-content p { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo-area">
+            <h1>2CE PROJE</h1>
+            <span data-lang="logo_sub">İNŞAAT MÜHENDİSLİK</span>
+        </a>
+
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="#" data-lang="nav_home">Anasayfa</a></li>
+                    <li><a href="#kurumsal" data-lang="nav_about">Kurumsal</a></li>
+                    <li><a href="#uzmanlik" data-lang="nav_exp">Uzmanlık Alanlarımız</a></li>
+                    <li><a href="#referanslar" data-lang="nav_ref">Referanslarımız</a></li>
+                    <li><a href="#haberler" data-lang="nav_news">Haberler</a></li>
+                    <li><a href="#contact" data-lang="nav_contact">İletişim</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <a href="tel:+905073612989" class="phone-number">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    (+90) 507 361 2989
+                </a>
+
+                <div class="lang-dropdown">
+                    <button class="lang-btn" id="currentLangBtn">🇹🇷 TR <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                    <div class="lang-menu">
+                        <a href="#" onclick="changeLang('tr', '🇹🇷 TR'); return false;">🇹🇷 TR - Türkçe</a>
+                        <a href="#" onclick="changeLang('en', '🇬🇧 EN'); return false;">🇬🇧 EN - English</a>
+                        <a href="#" onclick="changeLang('ru', '🇷🇺 RU'); return false;">🇷🇺 RU - Русский</a>
+                        <a href="#" onclick="changeLang('de', '🇩🇪 DE'); return false;">🇩🇪 DE - Deutsch</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-slider-container">
+        <div class="slider-wrapper">
+            <div class="slide active">
+                <div class="slide-bg" style="background-image: url('giris_sayfasi.jpg');"></div>
+                <div class="hero-content">
+                    <h2 data-lang="hero_title">GÜVENİN MİMARI,<br><span>GELECEĞİN İMZASI</span></h2>
+                    <p data-lang="hero_desc">Mühendisliğin matematiksel disiplinini, yarının estetik ihtiyaçlarıyla birleştirerek sarsılmaz yaşam alanları kurguluyoruz.</p>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="slide-bg" style="background-image: url('2ce1foto.jpg');"></div>
+                <div class="hero-content">
+                    <h2 data-lang="hero_title2">SAĞLAM TEMELLER,<br><span>PRESTİJLİ PROJELER</span></h2>
+                    <p data-lang="hero_desc2">Gelişmiş statik analiz modellerimiz ve deneyimli mühendislik kadromuzla, projenizin her aşamasında sürdürülebilir güven sunuyoruz.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="slider-btn prev" onclick="moveSlide(-1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="slider-btn next" onclick="moveSlide(1)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+
+        <div class="hero-bottom-bar">
+            <a href="#taahhut-bolumu" class="hero-bar-item" style="text-decoration: none; color: inherit;">
+                <h5 data-lang="bar_1">TAAHHÜT</h5>
+            </a>
+            <div class="hero-bar-item"><h5 data-lang="bar_2">MÜHENDİSLİK</h5></div>
+            <div class="hero-bar-item"><h5 data-lang="bar_3">DANIŞMANLIK</h5></div>
+            <a href="tel:+905073612989" class="hero-bar-item" style="background: rgba(203, 163, 101, 0.9); color: #000; text-decoration: none;">
+                <h5 style="font-weight: 800;" data-lang="bar_4">HIZLI İLETİŞİM</h5>
+            </a>
+        </div>
+    </section>
+
+    <section id="kurumsal" class="content-section bg-light">
+        <div class="section-header">
+            <h2 data-lang="corp_header"><span>Kurumsal</span> Profilimiz</h2>
+            <p data-lang="corp_subheader">Mühendislikte çeyrek asırlık tecrübe ile geleceği ve güveni inşa ediyoruz.</p>
+        </div>
+        <div class="corporate-content">
+            <div class="corporate-text">
+                <h3 data-lang="corp_title1">Hakkımızda</h3>
+                <p data-lang="corp_desc1">2CE Proje İnşaat Mühendislik olarak, Gaziantep merkezli ofisimizde güncel deprem yönetmeliklerine (TBDY-2018) ve uluslararası standartlara uygun betonarme, çelik og karma yapıların statik-dinamik analizlerini gerçekleştiriyoruz. Amacımız, estetik mimariyi sarsılmaz mühendislik matematiği ile buluşturmaktır.</p>
+                <h3 data-lang="corp_title2">Misyon & Vizyon</h3>
+                <p data-lang="corp_desc2"><strong>Misyonumuz:</strong> Yenilikçi teknolojiler (BIM, ileri statik yazılımlar) kullanarak maliyet-optimizasyonlu ve yüksek güvenlikli projeler üretmek.<br><br><strong>Vizyonumuz:</strong> Sektörde kalite kontrolünden taviz vermeden, taahhüt ve projelendirme süreçlerinde Türkiye'nin referans alınan lider mühendislik firmalarından biri olmak.</p>
+            </div>
+            <div class="corporate-image">
+                <img src="kurumsal_1.jpg" alt="Kurumsal Mühendislik">
+            </div>
+        </div>
+    </section>
+
+    <section id="uzmanlik" class="expertise-section content-section">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2 data-lang="exp_header"><span>Uzmanlık</span> Alanlarımız</h2>
+            <p data-lang="exp_title">Temelimizde Güven, Yapımızda Kalite Var.</p>
+        </div>
+        
+        <div class="grid-container">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Hesaplama">
+                <div class="card-content">
+                    <h4 data-lang="card1_title">Statik Projelendirme</h4>
+                    <p data-lang="card1_desc">Güncel yönetmeliklere uygun, güvenli taşıyıcı sistem analizleri ve ileri düzey statik hesaplamalar.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Planlama">
+                <div class="card-content">
+                    <h4 data-lang="card2_title">Performans Analizi</h4>
+                    <p data-lang="card2_desc">Mevcut yapıların deprem dayanım testleri, yerinde güçlendirme ve kentsel dönüşüm projelendirmesi.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Uygulama">
+                <div class="card-content">
+                    <h4 data-lang="card3_title">Taahhüt & Uygulama</h4>
+                    <p data-lang="card3_desc">Sahada kalite kontrolünden taviz vermeden anahtar teslim fabrika, konut ve ticari yapı taahhüt hizmetleri.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="referanslar" class="content-section bg-light">
+        <div class="section-header">
+            <h2 data-lang="ref_header"><span>Öne Çıkan</span> Referanslarımız</h2>
+            <p data-lang="ref_subheader">İmza attığımız yapısal çözümler og tamamlanan prestijli projelerimiz.</p>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Proje 1">
+                <div class="card-content">
+                    <h4 data-lang="ref1_title">Gaziantep İş Merkezi</h4>
+                    <p data-lang="ref1_desc">30.000 m² kapalı alana sahip ticari kompleksin statik betonarme projelendirmesi og şantiye danışmanlığı.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1429497419816-9ca5cfb4571a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Proje 2">
+                <div class="card-content">
+                    <h4 data-lang="ref2_title">OSB Çelik Lojistik Tesisi</h4>
+                    <p data-lang="ref2_desc">Ağır sanayi yüklerine dayanıklı, geniş açıklıklı çelik konstrüksiyon üretim tesisi tasarımı.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Proje 3">
+                <div class="card-content">
+                    <h4 data-lang="ref3_title">Vadi Konutları Güçlendirme</h4>
+                    <p data-lang="ref3_desc">12 bloklu mevcut yapı stokunun deprem performans analizi ve karbon fiber destekli güçlendirme uygulaması.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="haberler" class="content-section">
+        <div class="section-header">
+            <h2 data-lang="news_header"><span>Güncel</span> Haberler</h2>
+            <p data-lang="news_subheader">Sektörel gelişmeler, seminerler og firmamızdan son duyurular.</p>
+        </div>
+        <div class="grid-container">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Haber 1">
+                <div class="card-content">
+                    <span class="card-date">12 Mayıs 2026</span>
+                    <h4 data-lang="news1_title">Yeni Nesil Sismik İzolatörler</h4>
+                    <p data-lang="news1_desc">Mühendislik ekibimiz, hastane projelerinde zorunlu hale gelen sismik taban izolasyon sistemleri eğitimini tamamladı.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Haber 2">
+                <div class="card-content">
+                    <span class="card-date">03 Nisan 2026</span>
+                    <h4 data-lang="news2_title">BIM Teknolojisi Entegrasyonu</h4>
+                    <p data-lang="news2_desc">Tüm büyük ölçekli projelerimizde 3D Yapı Bilgi Modellemesi (BIM) standartlarına geçiş yaptık, çakışma testlerini dijitalde çözüyoruz.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Haber 3">
+                <div class="card-content">
+                    <span class="card-date">18 Mart 2026</span>
+                    <h4 data-lang="news3_title">Sürdürülebilir Yeşil Beton</h4>
+                    <p data-lang="news3_desc">Karbon ayak izini düşüren, uçucu kül og cüruf katkılı yeni nesil beton sınıflarını projelerimizde standart hale getiriyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="highlight-section" id="taahhut-bolumu">
+        <div class="highlight-image"></div>
+        <div class="highlight-content">
+            <h3 data-lang="high_title" style="font-size: 2rem; margin-bottom: 15px;">MÜKEMMEL MÜHENDİSLİK ÇÖZÜMLERİ</h3>
+            <p data-lang="high_desc" style="color: #ccc; margin-bottom: 20px;">Mevcut yapıların performans analizleri, yerinde dönüşüm ve güçlendirme projeleri ile inşaat sektörüne yönelik profesyonel çözüm ortaklığı sunuyoruz.</p>
+            <p style="color: #CBA365; font-weight: 700; font-size: 1.2rem;" data-lang="high_sub">Yapılar yerinde kalır, güven yenilenir.</p>
+        </div>
+    </section>
+
+    <section class="contact-page-section" id="contact">
+        <div class="contact-info-banner">
+            <div class="info-item">
+                <div class="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CBA365" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                <h3 data-lang="contact_phone_title">Telefon</h3>
+                <p>+90 507 361 29 89</p>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CBA365" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                <h3 data-lang="contact_email_title">Mail</h3>
+                <p>tolek_2989@hotmail.com</p>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#CBA365" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                <h3 data-lang="contact_address_title">Adres</h3>
+                <p data-lang="contact_address_desc">Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep</p>
+            </div>
+        </div>
+
+        <div class="contact-main">
+            <div class="form-section">
+                <h2 data-lang="contact_form_title" style="margin-bottom: 20px;">Bize Ulaşın</h2>
+                <form class="contact-form">
+                    <div class="form-grid">
+                        <input type="text" data-placeholder="form_name" placeholder="Adınız" required>
+                        <input type="text" data-placeholder="form_surname" placeholder="Soyadınız" required>
+                        <input type="tel" data-placeholder="form_phone" placeholder="Telefon Numaranız" required>
+                        <input type="text" data-placeholder="form_company" placeholder="Şirketiniz">
+                    </div>
+                    <input type="email" data-placeholder="form_email" placeholder="E-mail Adresiniz" required>
+                    <textarea data-placeholder="form_message" placeholder="Mesajınız" required></textarea>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="kvkk" required>
+                        <label for="kvkk" data-lang="form_kvkk">KVKK gizlilik şartlarını okudum anladım.</label>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <span data-lang="form_submit">Gönder</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </form>
+            </div>
+
+            <div class="map-section">
+                <h2 data-lang="contact_map_title" style="margin-bottom: 20px;">Lokasyon</h2>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d236.5773162270401!2d37.32713502454346!3d37.08149088754592!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMzfCsDA0JzU0LjAiTiAzN8KwMTknMzguMSJF!5e0!3m2!1str!2str!4v1779228233764!5m2!1str!2str" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 data-lang="foot_quick" style="margin-bottom: 15px; color:#CBA365;">Hızlı Erişim</h4>
+                <ul class="footer-links">
+                    <li><a href="#kurumsal" data-lang="foot_about">Kurumsal</a></li>
+                    <li><a href="#haberler" data-lang="foot_news">Haberler</a></li>
+                    <li><a href="#referanslar" data-lang="foot_projects">Projeler</a></li>
+                    <li><a href="#contact" data-lang="foot_contact">Bize Ulaşın</a></li>
+                    <li><a href="#">KVKK</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col footer-logo" style="text-align: center;">
+                <h2>2CE PROJE</h2>
+                <span style="letter-spacing: 2px;">GLOBAL</span>
+            </div>
+
+            <div class="footer-col footer-contact" style="text-align: right;">
+                <h3 style="color:#CBA365; margin-bottom: 10px;">(+90) 507 361 2989</h3>
+                <p data-lang="foot_address" style="color:#aaa;">Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep</p>
+            </div>
+        </div>
+        <div class="footer-bottom" data-lang="foot_copy">
+            © 2026 2CE PROJE İNŞAAT MÜHENDİSLİK. Tüm hakları saklıdır.
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            tr: {
+                logo_sub: "İNŞAAT MÜHENDİSLİK",
+                nav_home: "Anasayfa", nav_about: "Kurumsal", nav_exp: "Uzmanlık Alanlarımız", nav_ref: "Referanslarımız", nav_news: "Haberler", nav_contact: "İletişim",
+                hero_title: "GÜVENİN MİMARI,<br><span>GELECEĞİN İMZASI</span>",
+                hero_desc: "Mühendisliğin matematiksel disiplinini, yarının estetik ihtiyaçlarıyla birleştirerek sarsılmaz yaşam alanları kurguluyoruz.",
+                hero_title2: "SAĞLAM TEMELLER,<br><span>PRESTİJLİ PROJELER</span>",
+                hero_desc2: "Gelişmiş statik analiz modellerimiz ve deneyimli mühendislik kadromuzla, projenizin her aşamasında sürdürülebilir güven sunuyoruz.",
+                bar_1: "TAAHHÜT", bar_2: "MÜHENDİSLİK", bar_3: "DANIŞMANLIK", bar_4: "HIZLI İLETİŞİM",
+                
+                corp_header: "<span>Kurumsal</span> Profilimiz",
+                corp_subheader: "Mühendislikte çeyrek asırlık tecrübe ile geleceği ve güveni inşa ediyoruz.",
+                corp_title1: "Hakkımızda",
+                corp_desc1: "2CE Proje İnşaat Mühendislik olarak, Gaziantep merkezli ofisimizde güncel deprem yönetmeliklerine (TBDY-2018) ve uluslararası standartlara uygun betonarme, çelik ve karma yapıların statik-dinamik analizlerini gerçekleştiriyoruz. Amacımız, estetik mimariyi sarsılmaz mühendislik matematiği ile buluşturmaktır.",
+                corp_title2: "Misyon & Vizyon",
+                corp_desc2: "<strong>Misyonumuz:</strong> Yenilikçi teknolojiler (BIM, ileri statik yazılımlar) kullanarak maliyet-optimizasyonlu og yüksek güvenlikli projeler üretmek.<br><br><strong>Vizyonumuz:</strong> Sektörde kalite kontrolünden taviz vermeden, taahhüt ve projelendirme süreçlerinde Türkiye'nin referans alınan lider mühendislik firmalarından biri olmak.",
+                
+                exp_header: "<span>Uzmanlık</span> Alanlarımız",
+                exp_title: "Temelimizde Güven, Yapımızda Kalite Var.",
+                card1_title: "Statik Projelendirme", card1_desc: "Güncel yönetmeliklere uygun, güvenli taşıyıcı sistem analizleri ve ileri düzey statik hesaplamalar.",
+                card2_title: "Performans Analizi", card2_desc: "Mevcut yapıların deprem dayanım testleri, yerinde güçlendirme ve kentsel dönüşüm projelendirmesi.",
+                card3_title: "Taahhüt & Uygulama", card3_desc: "Sahada kalite kontrolünden taviz vermeden anahtar teslim fabrika, konut ve ticari yapı taahhüt hizmetleri.",
+                
+                ref_header: "<span>Öne Çıkan</span> Referanslarımız",
+                ref_subheader: "İmza attığımız yapısal çözümler og tamamlanan prestijli projelerimiz.",
+                ref1_title: "Gaziantep İş Merkezi", ref1_desc: "30.000 m² kapalı alana sahip ticari kompleksin statik betonarme projelendirmesi ve şantiye danışmanlığı.",
+                ref2_title: "OSB Çelik Lojistik Tesisi", ref2_desc: "Ağır sanayi yüklerine dayanıklı, geniş açıklıklı çelik konstrüksiyon üretim tesisi tasarımı.",
+                ref3_title: "Vadi Konutları Güçlendirme", ref3_desc: "12 bloklu mevcut yapı stokunun deprem performans analizi ve karbon fiber destekli güçlendirme uygulaması.",
+                
+                news_header: "<span>Güncel</span> Haberler",
+                news_subheader: "Sektörel gelişmeler, seminerler ve firmamızdan son duyurular.",
+                news1_title: "Yeni Nesil Sismik İzolatörler", news1_desc: "Mühendislik ekibimiz, hastane projelerinde zorunlu hale gelen sismik taban izolasyon sistemleri eğitimini tamamladı.",
+                news2_title: "BIM Teknolojisi Entegrasyonu", news2_desc: "Tüm büyük ölçekli projelerimizde 3D Yapı Bilgi Modellemesi (BIM) standartlarına geçiş yaptık, çakışma testlerini dijitalde çözüyoruz.",
+                news3_title: "Sürdürülebilir Yeşil Beton", news3_desc: "Karbon ayak izini düşüren, uçucu kül ve cüruf katkılı yeni nesil beton sınıflarını projelerimizde standart hale getiriyoruz.",
+                
+                high_title: "MÜKEMMEL MÜHENDİSLİK ÇÖZÜMLERİ", high_sub: "Yapılar yerinde kalır, güven yenilenir.",
+                high_desc: "Mevcut yapıların performans analizleri, yerinde dönüşüm ve güçlendirme projeleri ile inşaat sektörüne yönelik profesyonel çözüm ortaklığı sunuyoruz.",
+                
+                foot_quick: "Hızlı Erişim", foot_about: "Kurumsal", foot_news: "Haberler", foot_projects: "Projeler", foot_contact: "Bize Ulaşın",
+                foot_address: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                foot_copy: "© 2026 2CE PROJE İNŞAAT MÜHENDİSLİK. Tüm hakları saklıdır.",
+                
+                contact_phone_title: "Telefon", contact_email_title: "Mail", contact_address_title: "Adres",
+                contact_address_desc: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                contact_form_title: "Bize Ulaşın", contact_map_title: "Lokasyon",
+                form_name: "Adınız", form_surname: "Soyadınız", form_phone: "Telefon Numaranız", form_company: "Şirketiniz",
+                form_email: "E-mail Adresiniz", form_message: "Mesajınız", form_kvkk: "KVKK gizlilik şartlarını okudum anladım.", form_submit: "Gönder"
+            },
+            en: {
+                logo_sub: "CONSTRUCTION ENGINEERING",
+                nav_home: "Home", nav_about: "Corporate", nav_exp: "Our Expertise", nav_ref: "References", nav_news: "News", nav_contact: "Contact",
+                hero_title: "ARCHITECT OF TRUST,<br><span>SIGNATURE OF THE FUTURE</span>",
+                hero_desc: "Combining the mathematical discipline of engineering with the aesthetic needs of tomorrow, we create unshakable living spaces.",
+                hero_title2: "SOLID FOUNDATIONS,<br><span>PRESTIGIOUS PROJECTS</span>",
+                hero_desc2: "With our advanced structural analysis models and experienced engineering staff, we offer sustainable trust at every stage of your project.",
+                bar_1: "CONTRACTING", bar_2: "ENGINEERING", bar_3: "CONSULTANCY", bar_4: "QUICK CONTACT",
+                
+                corp_header: "<span>Corporate</span> Profile",
+                corp_subheader: "Building the future and trust with a quarter-century of engineering experience.",
+                corp_title1: "About Us",
+                corp_desc1: "As 2CE Proje Construction Engineering, we perform static-dynamic analyses of reinforced concrete, steel, and composite structures in accordance with current earthquake regulations and international standards in our Gaziantep-based office.",
+                corp_title2: "Mission & Vision",
+                corp_desc2: "<strong>Mission:</strong> To produce high-security, cost-optimized projects using innovative technologies (BIM, advanced statics software).<br><br><strong>Vision:</strong> To become one of Turkey's leading reference engineering firms in contracting and project design processes without compromising quality control.",
+                
+                exp_header: "<span>Our</span> Expertise",
+                exp_title: "Trust in Our Foundation, Quality in Our Structure.",
+                card1_title: "Static Project Design", card1_desc: "Safe structural system analyses and advanced static calculations in accordance with current regulations.",
+                card2_title: "Performance Analysis", card2_desc: "Earthquake resistance tests of existing structures, on-site strengthening, and urban transformation project design.",
+                card3_title: "Contracting & Application", card3_desc: "Turnkey factory, residential and commercial building contracting services without compromising quality control in the field.",
+                
+                ref_header: "<span>Featured</span> References",
+                ref_subheader: "Our structural solutions and completed prestigious projects.",
+                ref1_title: "Gaziantep Business Center", ref1_desc: "Structural reinforced concrete project design and construction site consultancy of a commercial complex with a closed area of 30,000 m².",
+                ref2_title: "OIZ Steel Logistics Facility", ref2_desc: "Design of a wide-span steel construction production facility resistant to heavy industrial loads.",
+                ref3_title: "Vadi Houses Strengthening", ref3_desc: "Earthquake performance analysis and carbon fiber supported strengthening application of existing building stock with 12 blocks.",
+                
+                news_header: "<span>Current</span> News",
+                news_subheader: "Sectoral developments, seminars and latest announcements from our company.",
+                news1_title: "New Generation Seismic Isolators", news1_desc: "Our engineering team completed the training on seismic base isolation systems, which have become mandatory in hospital projects.",
+                news2_title: "BIM Technology Integration", news2_desc: "We switched to 3D Building Information Modeling (BIM) standards in all our large-scale projects, solving clash tests digitally.",
+                news3_title: "Sustainable Green Concrete", news3_desc: "We standardize new generation concrete classes with fly ash and slag additives that reduce the carbon footprint in our projects.",
+                
+                high_title: "EXCELLENT ENGINEERING SOLUTIONS", high_sub: "Structures remain on-site, trust is renewed.",
+                high_desc: "We offer professional solution partnership for the construction sector with performance analysis of existing structures, on-site transformation and strengthening projects.",
+                
+                foot_quick: "Quick Access", foot_about: "Corporate", foot_news: "News", foot_projects: "Projects", foot_contact: "Contact Us",
+                foot_address: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                foot_copy: "© 2026 2CE PROJE CONSTRUCTION ENGINEERING. All rights reserved.",
+                
+                contact_phone_title: "Phone", contact_email_title: "Mail", contact_address_title: "Address",
+                contact_address_desc: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                contact_form_title: "Contact Us", contact_map_title: "Location",
+                form_name: "Name", form_surname: "Surname", form_phone: "Phone Number", form_company: "Company",
+                form_email: "E-mail Address", form_message: "Message", form_kvkk: "I have read and understood the KVKK privacy terms.", form_submit: "Submit"
+            },
+            ru: {
+                logo_sub: "СТРОИТЕЛЬНОЕ ПРОЕКТИРОВАНИЕ",
+                nav_home: "Главная", nav_about: "О компании", nav_exp: "Наша экспертиза", nav_ref: "Рекомендации", nav_news: "Новости", nav_contact: "Контакты",
+                hero_title: "АРХИТЕКТОР ДОВЕРИЯ,<br><span>ПОДПИСЬ БУДУЩЕГО</span>",
+                hero_desc: "Сочетая математическую дисциплину инженерии с эстетическими потребностями завтрашнего дня, мы создаем незыблемые жилые пространства.",
+                hero_title2: "ПРОЧНЫЙ ФУНДАМЕНТ,<br><span>ПРЕСТИЖНЫЕ ПРОЕКТЫ</span>",
+                hero_desc2: "Благодаря нашим передовым моделям структурного анализа и опытному инженерному составу мы предлагаем устойчивое доверие на каждом этапе вашего проекта.",
+                bar_1: "ПОДРЯД", bar_2: "ИНЖЕНЕРИЯ", bar_3: "КОНСУЛЬТАЦИИ", bar_4: "БЫСТРЫЙ КОНТАКТ",
+                
+                corp_header: "<span>Профиль</span> Компании",
+                corp_subheader: "Строим будущее и доверие с четвертьвековым инженерным опытом.",
+                corp_title1: "О нас",
+                corp_desc1: "Как 2CE Proje Construction Engineering, мы выполняем статический и динамический анализ железобетонных, стальных и композитных конструкций в соответствии с действующими нормами по землетрясениям и международными стандартами в нашем офисе в Газиантепе.",
+                corp_title2: "Миссия и Видение",
+                corp_desc2: "<strong>Миссия:</strong> Создавать высокобезопасные, оптимизированные по стоимости проекты с использованием инновационных технологий (BIM, передовое программное обеспечение для статики).<br><br><strong>Видение:</strong> Стать одной из ведущих справочных инженерных фирм Турции в процессах заключения контрактов и проектирования без ущерба для контроля качества.",
+                
+                exp_header: "<span>Наша</span> Экспертиза",
+                exp_title: "Доверие в нашем фундаменте, качество в нашей структуре.",
+                card1_title: "Проектирование статических объектов", card1_desc: "Надежный анализ конструктивных систем и передовые статические расчеты в соответствии с действующими правилами.",
+                card2_title: "Анализ эффективности", card2_desc: "Испытания на сейсмостойкость существующих конструкций, усиление на месте и проектирование городской трансформации.",
+                card3_title: "Подрядные работы и применение", card3_desc: "Услуги по строительству заводов, жилых и коммерческих зданий под ключ без ущерба для контроля качества на объекте.",
+                
+                ref_header: "<span>Популярные</span> Рекомендации",
+                ref_subheader: "Наши конструктивные решения и реализованные престижные проекты.",
+                ref1_title: "Бизнес-центр Газиантепа", ref1_desc: "Проектирование железобетонных конструкций и консультирование по строительной площадке коммерческого комплекса закрытой площадью 30 000 м².",
+                ref2_title: "Стальной логистический комплекс OIZ", ref2_desc: "Проектирование широкопролетного производственного здания из стальных конструкций, устойчивого к тяжелым промышленным нагрузкам.",
+                ref3_title: "Усиление домов Вади", ref3_desc: "Анализ сейсмической эффективности и применение армирования углеродным волокном существующего строительного фонда из 12 блоков.",
+                
+                news_header: "<span>Текущие</span> Новости",
+                news_subheader: "Отраслевые разработки, семинары и последние объявления нашей компании.",
+                news1_title: "Сейсмоизоляторы нового поколения", news1_desc: "Наша инженерная команда завершила обучение по системам сейсмической базовой изоляции, которые стали обязательными в проектах больниц.",
+                news2_title: "Интеграция технологии BIM", news2_desc: "Мы перешли на стандарты 3D-моделирования строительной информации (BIM) во всех наших крупномасштабных проектах, решая тесты на коллизии в цифровом формате.",
+                news3_title: "Устойчивый зеленый бетон", news3_desc: "Мы стандартизируем в наших проектах классы бетона нового поколения с добавками летучей золы и шлака, снижающие углеродный след.",
+                
+                high_title: "ОТЛИЧНЫЕ ИНЖЕНЕРНЫЕ РЕШЕНИЯ", high_sub: "Конструкции остаются на месте, доверие обновляется.",
+                high_desc: "Мы предлагаем профессиональное партнерство в сфере строительных решений с анализом эффективности существующих конструкций, проектами трансформации и усиления на месте.",
+                
+                foot_quick: "Быстрый доступ", foot_about: "О компании", foot_news: "Новости", foot_projects: "Проекты", foot_contact: "Связаться с нами",
+                foot_address: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                foot_copy: "© 2026 2CE PROJE СТРОИТЕЛЬНОЕ ПРОЕКТИРОВАНИЕ. Все права защищены.",
+                
+                contact_phone_title: "Телефон", contact_email_title: "Почта", contact_address_title: "Адрес",
+                contact_address_desc: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                contact_form_title: "Связаться с нами", contact_map_title: "Расположение",
+                form_name: "Имя", form_surname: "Фамилия", form_phone: "Номер телефона", form_company: "Компания",
+                form_email: "Адрес электронной почты", form_message: "Сообщение", form_kvkk: "Я прочитал и понял условия конфиденциальности KVKK.", form_submit: "Отправить"
+            },
+            de: {
+                logo_sub: "BAUINGENIEURWESEN",
+                nav_home: "Startseite", nav_about: "Unternehmen", nav_exp: "Unsere Expertise", nav_ref: "Referenzen", nav_news: "Neuigkeiten", nav_contact: "Kontakt",
+                hero_title: "ARCHITEKT DES VERTRAUENS,<br><span>SIGNATUR DER ZUKUNFT</span>",
+                hero_desc: "Indem wir die mathematische Disziplin des Ingenieurwesens mit den ästhetischen Bedürfnissen von morgen verbinden, schaffen wir unerschütterliche Lebensräume.",
+                hero_title2: "SOLIDE FUNDAMENTE,<br><span>PRESTIGETRÄCHTIGE PROJEKTE</span>",
+                hero_desc2: "Mit unseren fortschrittlichen Strukturanalysemodellen und unserem erfahrenen Ingenieurteam bieten wir nachhaltiges Vertrauen in jeder Phase Ihres Projekts.",
+                bar_1: "RECHTSVERTRAG", bar_2: "INGENIEURWESEN", bar_3: "BERATUNG", bar_4: "SCHNELLER KONTAKT",
+                
+                corp_header: "<span>Unternehmens</span>profil",
+                corp_subheader: "Mit einem Vierteljahrhundert Ingenieurerfahrung Zukunft und Vertrauen bauen.",
+                corp_title1: "Über uns",
+                corp_desc1: "Als 2CE Proje Bauingenieurwesen führen wir in unserem Büro in Gaziantep statisch-dynamische Analysen von Stahlbeton-, Stahl- und Verbundstrukturen in Übereinstimmung mit den aktuellen Erdbebenvorschriften und internationalen Standards durch.",
+                corp_title2: "Mission & Vision",
+                corp_desc2: "<strong>Mission:</strong> Erstellung hochsicherer, kostenoptimierter Projekte unter Einsatz innovativer Technologien (BIM, fortschrittliche Statiksoftware).<br><br><strong>Vision:</strong> Eines der führenden Referenz-Ingenieurbüros in der Türkei bei Vertrags- und Projektdesignprozessen zu werden, ohne Kompromisse bei der Qualitätskontrolle einzugehen.",
+                
+                exp_header: "<span>Unsere</span> Expertise",
+                exp_title: "Vertrauen in unser Fundament, Qualität in unserer Struktur.",
+                card1_title: "Statische Projektierung", card1_desc: "Sichere Tragsystemanalysen und fortschrittliche statische Berechnungen nach aktuellen Vorschriften.",
+                card2_title: "Leistungsanalyse", card2_desc: "Erdbebenwiderstandstests bestehender Gebäude, Ertüchtigung vor Ort und Projektierung der städtischen Transformation.",
+                card3_title: "Vertrag & Anwendung", card3_desc: "Schlüsselfertige Werks-, Wohn- und Gewerbebauverträge ohne Kompromisse bei der Qualitätskontrolle vor Ort.",
+                
+                ref_header: "<span>Ausgewählte</span> Referenzen",
+                ref_subheader: "Unsere strukturellen Lösungen und abgeschlossenen prestigeträchtigen Projekte.",
+                ref1_title: "Gaziantep Geschäftszentrum", ref1_desc: "Statische Stahlbetonprojektierung und Baustellenberatung eines Gewerbekomplexes mit einer geschlossenen Fläche von 30.000 m².",
+                ref2_title: "OIZ Stahl-Logistikzentrum", ref2_desc: "Planung einer weitgespannten Stahlkonstruktions-Produktionsstätte, die gegen schwere Industrieaktivitäten beständig ist.",
+                ref3_title: "Vadi Häuser Ertüchtigung", ref3_desc: "Erdbebenleistungsanalyse und kohlefaserunterstützte Ertüchtigung des bestehenden Gebäudebestands mit 12 Blöcken.",
+                
+                news_header: "<span>Aktuelle</span> News",
+                news_subheader: "Branchenentwicklungen, Seminare und neueste Ankündigungen unseres Unternehmens.",
+                news1_title: "Seismische Isolatoren der neuen Generation", news1_desc: "Unser Ingenieurteam hat die Schulung zu seismischen Basisisolationssystemen abgeschlossen, die bei Krankenhausprojekten obligatorisch geworden sind.",
+                news2_title: "BIM-Technologie-Integration", news2_desc: "Wir haben bei all unseren Großprojekten auf 3D Building Information Modeling (BIM) Standards umgestellt und lösen Kollisionstests digital.",
+                news3_title: "Nachhaltiger grüner Beton", news3_desc: "Wir standardisieren in unseren Projekten Betonklassen der neuen Generation mit Flugasche- und Schlackezusätzen, die den CO2-Fußabdruck reduzieren.",
+                
+                high_title: "EXZELLENTE INGENIEURLÖSUNGEN", high_sub: "Strukturen bleiben vor Ort, Vertrauen wird erneuert.",
+                high_desc: "Wir bieten professionelle Lösungspartnerschaften für die Bauwirtschaft mit Leistungsanalysen bestehender Strukturen, Umwandlungs- und Ertüchtigungsprojekten vor Ort.",
+                
+                foot_quick: "Schnellzugriff", foot_about: "Unternehmen", foot_news: "News", foot_projects: "Projekte", foot_contact: "Kontakt",
+                foot_address: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                foot_copy: "© 2026 2CE PROJE BAUINGENIEURWESEN. Alle Rechte vorbehalten.",
+                
+                contact_phone_title: "Telefon", contact_email_title: "E-Mail", contact_address_title: "Adresse",
+                contact_address_desc: "Atatürk Mah. Nahlbant Hasan Çavuş Cad.<br>Ceren Apt. No: 2/A<br>Şehitkamil / Gaziantep",
+                contact_form_title: "Kontaktieren Sie uns", contact_map_title: "Standort",
+                form_name: "Name", form_surname: "Nachname", form_phone: "Telefonnummer", form_company: "Unternehmen",
+                form_email: "E-Mail-Adresse", form_message: "Nachricht", form_kvkk: "Ich habe die KVKK-Datenschutzbestimmungen gelesen und verstanden.", form_submit: "Senden"
+            }
+        };
+
+        function changeLang(lang, buttonText) {
+            document.getElementById('currentLangBtn').innerHTML = buttonText + ' <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+            
+            const elements = document.querySelectorAll('[data-lang]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+
+            const placeholders = document.querySelectorAll('[data-placeholder]');
+            placeholders.forEach(element => {
+                const key = element.getAttribute('data-placeholder');
+                if (translations[lang][key]) {
+                    element.setAttribute('placeholder', translations[lang][key]);
+                }
+            });
+
+            localStorage.setItem('selectedLang', lang);
+            localStorage.setItem('selectedLangBtn', buttonText);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem('selectedLang');
+            const savedBtnText = localStorage.getItem('selectedLangBtn');
+            if (savedLang && savedBtnText) {
+                changeLang(savedLang, savedBtnText);
+            }
+        });
+
+        /* --- SLIDER JAVASCRIPT KODLARI --- */
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        let slideInterval = setInterval(nextSlide, 5000); // 5 saniyede bir otomatik geçiş
+
+        function showSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        function moveSlide(step) {
+            clearInterval(slideInterval); // Kullanıcı butona basınca zamanlayıcıyı sıfırla
+            showSlide(currentSlide + step);
+            slideInterval = setInterval(nextSlide, 5000); // Zamanlayıcıyı yeniden başlat
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+    </script>
+</body>
+</html>
