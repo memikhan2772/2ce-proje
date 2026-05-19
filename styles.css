@@ -666,13 +666,40 @@ footer {
     }
 }
 
+/* MOBİL DÜZENLEMELERİ */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
+    /* Referanslar ve Haberler Grid Yapısını Tek Sütuna Düşür */
+    .grid-container, 
+    .references-grid, 
+    .news-grid {
+        display: grid;
+        grid-template-columns: 1fr !important; /* Yan yana değil, tek sütun yap */
         gap: 20px;
-        padding: 20px 5%;
-        background: rgba(0,0,0,0.9);
+        padding: 0 10px;
     }
+
+    /* Kurumsal bölümündeki yan yana duran metin ve resmi alt alta al */
+    .corporate-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .corporate-image {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Kartların genişliğini mobilde tam ekran yap */
+    .card {
+        width: 100%;
+        max-width: none;
+    }
+
+    /* Bölüm başlıklarını mobilde biraz küçült (ekrana sığması için) */
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+}
 
     nav ul {
         display: none;
@@ -705,5 +732,5 @@ footer {
         padding: 50px 5%;
         gap: 40px;
     }
-}
+
 
