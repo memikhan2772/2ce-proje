@@ -666,6 +666,46 @@ footer {
     }
 }
 
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 5%;
+        background: rgba(0,0,0,0.9);
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    .hero-content h2 {
+        font-size: 3rem;
+    }
+
+    .hero-bottom-bar {
+        flex-direction: column;
+    }
+
+    .hero-bar-item {
+        border-right: none; 
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Mobil İletişim Formu Ayarları */
+    .contact-form {
+        grid-template-columns: 1fr;
+    }
+    .contact-form textarea, 
+    .contact-form .checkbox-group, 
+    .contact-form button,
+    .contact-form input[type="email"] {
+        grid-column: span 1 !important;
+    }
+    .contact-main {
+        padding: 50px 5%;
+        gap: 40px;
+    }
+}
 /* MOBİL DÜZENLEMELERİ */
 @media (max-width: 768px) {
     /* Referanslar ve Haberler Grid Yapısını Tek Sütuna Düşür */
@@ -700,37 +740,3 @@ footer {
         font-size: 1.8rem;
     }
 }
-
-    nav ul {
-        display: none;
-    }
-
-    .hero-content h2 {
-        font-size: 3rem;
-    }
-
-    .hero-bottom-bar {
-        flex-direction: column;
-    }
-
-    .hero-bar-item {
-        border-right: none; 
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    /* Mobil İletişim Formu Ayarları */
-    .contact-form {
-        grid-template-columns: 1fr;
-    }
-    .contact-form textarea, 
-    .contact-form .checkbox-group, 
-    .contact-form button,
-    .contact-form input[type="email"] {
-        grid-column: span 1 !important;
-    }
-    .contact-main {
-        padding: 50px 5%;
-        gap: 40px;
-    }
-
-
