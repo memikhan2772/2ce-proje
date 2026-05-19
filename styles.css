@@ -706,37 +706,54 @@ footer {
         gap: 40px;
     }
 }
-/* MOBİL DÜZENLEMELERİ */
+/* Masaüstünde butonu gizle */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.mobile-menu-btn span {
+    width: 25px;
+    height: 3px;
+    background-color: #CBA365; /* Altın rengi */
+    border-radius: 2px;
+}
+
+/* MOBİL GÖRÜNÜM (768px altı) */
 @media (max-width: 768px) {
-    /* Referanslar ve Haberler Grid Yapısını Tek Sütuna Düşür */
-    .grid-container, 
-    .references-grid, 
-    .news-grid {
-        display: grid;
-        grid-template-columns: 1fr !important; /* Yan yana değil, tek sütun yap */
-        gap: 20px;
-        padding: 0 10px;
+    .mobile-menu-btn {
+        display: flex; /* Mobilde butonu göster */
     }
 
-    /* Kurumsal bölümündeki yan yana duran metin ve resmi alt alta al */
-    .corporate-content {
+    nav {
+        display: none; /* Menüyü varsayılan olarak gizle */
+        position: absolute;
+        top: 100%;
+        right: 5%;
+        background: #111;
+        width: 200px;
+        border-radius: 8px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    /* Menü açıldığında görünecek sınıf */
+    nav.active {
+        display: block;
+    }
+
+    nav ul {
         flex-direction: column;
-        text-align: center;
+        padding: 20px;
+        gap: 15px;
     }
 
-    .corporate-image {
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    /* Kartların genişliğini mobilde tam ekran yap */
-    .card {
-        width: 100%;
-        max-width: none;
-    }
-
-    /* Bölüm başlıklarını mobilde biraz küçült (ekrana sığması için) */
-    .section-header h2 {
-        font-size: 1.8rem;
+    nav ul li a {
+        color: white;
+        display: block;
     }
 }

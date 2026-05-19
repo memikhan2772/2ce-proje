@@ -230,16 +230,29 @@
         </a>
 
         <div class="nav-container">
-            <nav>
-                <ul>
-                    <li><a href="#" data-lang="nav_home">Anasayfa</a></li>
-                    <li><a href="#kurumsal" data-lang="nav_about">Kurumsal</a></li>
-                    <li><a href="#uzmanlik" data-lang="nav_exp">Uzmanlık Alanlarımız</a></li>
-                    <li><a href="#referanslar" data-lang="nav_ref">Referanslarımız</a></li>
-                    <li><a href="#haberler" data-lang="nav_news">Haberler</a></li>
-                    <li><a href="#contact" data-lang="nav_contact">İletişim</a></li>
-                </ul>
-            </nav>
+           <header>
+    <a href="#" class="logo-area">
+        <h1>2CE PROJE</h1>
+        <span>İNŞAAT MÜHENDİSLİK</span>
+    </a>
+
+    <div class="nav-container">
+        <button class="mobile-menu-btn" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav id="main-nav">
+            <ul>
+                <li><a href="#">Anasayfa</a></li>
+                <li><a href="#kurumsal">Kurumsal</a></li>
+                <li><a href="#uzmanlik">Uzmanlık</a></li>
+                <li><a href="#contact">İletişim</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
             <div class="header-actions">
                 <a href="tel:+905073612989" class="phone-number">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
@@ -742,6 +755,10 @@
         function nextSlide() {
             showSlide(currentSlide + 1);
         }
+        function toggleMenu() {
+    const nav = document.getElementById('main-nav');
+    nav.classList.toggle('active');
+}
     </script>
 </body>
 </html>
